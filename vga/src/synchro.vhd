@@ -4,8 +4,9 @@ use IEEE.numeric_std.all;
 
 entity synchronizer is
   port (
-    clk, reset                  : in  std_logic; 
-    hsync, vsync, de            : out std_logic
+    clk, reset                      : in std_logic;
+    count_in                        : in std_logic_vector(1 downto 0);  
+    hsync, vsync, de, count_reset   : out std_logic
   ) ;
 end entity synchronizer;
 
@@ -27,13 +28,14 @@ begin
         end if;
     end process ; -- setup
     
-    synchro : process( state )
+    synchro : process( state, count_in )
     begin
         case state is
             when reset =>
                 hsync       <= '1';
                 vsync       <= '1';
                 de          <= '0';
+                count_reset <= '1';
                 sx          <= (others => '0');
                 sy          <= (others => '0');
 
@@ -43,6 +45,7 @@ begin
                 hsync       <= '1';
                 vsync       <= '1';
                 de          <= '0';
+                count_reset <= '1';
                 
             -- TODO: Conditional v_sync
             when h_sync =>
