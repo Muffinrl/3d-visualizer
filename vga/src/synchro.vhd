@@ -2,14 +2,14 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity draw_logic is
+entity synchronizer is
   port (
     clk, reset                  : in  std_logic; 
     hsync, vsync, de            : out std_logic
   ) ;
-end entity draw_logic;
+end entity synchronizer;
 
-architecture rtl of draw_logic is
+architecture rtl of synchronizer is
     type fsm_state_type is (reset, idle, h_sync, v_sync);
     signal state, new_state     : fsm_state_type;
     signal sx, sy               : std_logic_vector(9 downto 0);
