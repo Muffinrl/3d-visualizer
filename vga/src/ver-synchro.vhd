@@ -7,15 +7,15 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity h_synchronizer is
+entity v_synchronizer is
   port (
     clk, reset                      : in std_logic;
     count_in, y                     : in std_logic_vector(9 downto 0);  
     vsync                           : out std_logic;
   ) ;
-end entity h_synchronizer;
+end entity v_synchronizer;
 
-architecture rtl of h_synchronizer is
+architecture rtl of v_synchronizer is
     type fsm_state_type is (reset, idle, init, v_front, v_sync, v_back);
     signal state, new_state     : fsm_state_type;
 
