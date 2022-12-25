@@ -1,15 +1,15 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity 2-bit-counter is
+entity hor-counter is
     port (
         clk, reset      : in std_logic;
-        count_out       : out std_logic_vector(1 downto 0);
+        count_out       : out std_logic_vector(9 downto 0);
     ) ;
 
-end 2-bit-counter;
+end hor-counter;
 
-architecture rtl of 2_bit_counter is
+architecture rtl of hor-counter is
     
     signal count, new_count     : unsigned(1 downto 0);
 begin
