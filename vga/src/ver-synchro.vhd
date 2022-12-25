@@ -11,7 +11,7 @@ entity h_synchronizer is
   port (
     clk, reset                      : in std_logic;
     count_in, y                     : in std_logic_vector(9 downto 0);  
-    vsync, count_reset              : out std_logic
+    vsync                           : out std_logic;
   ) ;
 end entity h_synchronizer;
 
@@ -32,6 +32,8 @@ begin
         end if;
     end process ; -- reg
     
+    -- Module relies on the horizontal synchronizer to reset the counter, as they should be perfectly synced
+
     synchro : process( state, count_in )
     begin
         case state is
@@ -39,13 +41,11 @@ begin
             -- (Re)Initialise FSM
             when reset =>
                 vsync       <= '1';
-                count_reset <= '1';
 
                 new_state   <= idle;
                 
             when idle =>
                 vsync       <= '1';
-                count_reset <= '0';
             
             if (unsigned(count_in) >= to_unsigned(799, 10)) then
                 new_state   <= init;
@@ -56,7 +56,6 @@ begin
             -- Reset counter and prepare for new horizontal cycle
             when init =>
                 vsync       <= '1';
-                count_reset <= '1';
 
                 -- Transition to appropriate vertical region
                 if(y >= to_unsigned(525, 10)) then
@@ -77,7 +76,6 @@ begin
 
             when v_front =>
                 vsync       <= '1';
-                count_reset <= '0';
 
                 if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
@@ -87,7 +85,6 @@ begin
                 
             when v_sync =>
                 vsync       <= '0';
-                count_reset <= '0';
 
                 if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
@@ -97,7 +94,6 @@ begin
 
             when v_back =>
                 vsync       <= '1';
-                count_reset <= '0';
 
                 if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
