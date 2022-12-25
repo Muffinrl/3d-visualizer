@@ -17,7 +17,7 @@ entity h_synchronizer is
 end entity h_synchronizer;
 
 architecture rtl of h_synchronizer is
-    type fsm_state_type is (reset, init, h_front, h_sync, h_back, v_front, v_sync, v_back, visible);
+    type fsm_state_type is (reset, idle, init, h_front, h_sync, h_back, visible);
     signal state, new_state     : fsm_state_type;
     signal sy                   : unsigned(9 downto 0);
 
@@ -56,6 +56,24 @@ begin
 
                 sy          <= sy + 1; -- Increment on-screen y-coordinate
 
+                if (sy >= to_unsigned(480, 10)) then
+                    new_state   <= idle;
+                else
+                    new_state   <= visible;
+                end if;
+
+            -- Is active in place of VISIBLE during vsync region
+            when idle =>
+                hsync       <= '1';
+                de          <= '0';
+                count_reset <= '0';
+
+                if(unsigned(count_in) >= to_unsigned(640, 10)) then
+                    new_state   <= h_front;
+                else
+                    new_state   <= idle;
+                end if;
+
             -- Render image on screen
             when visible =>
                 hsync       <= '1';
@@ -88,8 +106,6 @@ begin
                 hsync       <= '0';
                 de          <= '0';
                 count_reset <= '0';
-
-                sx          <= sx + 1;
 
                 if(unsigned(count_in) >= to_unsigned(752, 10)) then
                     new_state   <= h_back;
