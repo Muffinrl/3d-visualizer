@@ -58,6 +58,23 @@ begin
                     new_state   <= visible;
                 end if;
 
+            -- Render image on screen
+            when visible =>
+                hsync       <= '1';
+                vsync       <= '1';
+                de          <= '1';
+                count_reset <= '0';
+
+                if(unsigned(count_in) >= to_unsigned(640, 10)) then
+                    new_state   <= h_front;
+                else
+                    new_state   <= visible;
+                end if;
+
+            -- ========================================
+            -- Start of Horizontal Sync Cycle
+            -- ========================================
+
             when h_front =>
                 hsync       <= '1';
                 vsync       <= '1';
@@ -96,6 +113,10 @@ begin
                     new_state   <= h_back;
                 end if;
 
+            -- ========================================
+            -- Start of Vertical Sync Cycle
+            -- ========================================
+
             when v_front =>
                 hsync       <= '1';
                 vsync       <= '1';
@@ -131,19 +152,6 @@ begin
                 else
                     new_state   <= v_back;
                 end if;
-
-            when visible =>
-                hsync       <= '1';
-                vsync       <= '1';
-                de          <= '1';
-                count_reset <= '0';
-
-                if(unsigned(count_in) >= to_unsigned(640, 10)) then
-                    new_state   <= h_front;
-                else
-                    new_state   <= visible;
-                end if;
-            
         end case;
     end process ; -- synchro
     
