@@ -1,3 +1,8 @@
+-- ===========================================================
+--                          IMPORTANT
+-- Synchronization is based on a RESOLUTION of 640x480 AT 60Hz
+-- ===========================================================
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
