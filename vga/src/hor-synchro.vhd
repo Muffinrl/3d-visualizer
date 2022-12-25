@@ -8,21 +8,18 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 entity h_synchronizer is
-  port (
-    clk, reset                      : in std_logic;
-    count_in                        : in std_logic_vector(9 downto 0);  
-    hsync, de, count_reset          : out std_logic;
-    y_out                           : out std_logic_vector(9 downto 0)
-  ) ;
+    port (
+        clk, reset                      : in std_logic;
+        count_in, y_in                  : in std_logic_vector(9 downto 0);  
+        hsync, de, count_reset          : out std_logic
+    ) ;
 end entity h_synchronizer;
 
 architecture rtl of h_synchronizer is
     type fsm_state_type is (prime, idle, init, h_front, h_sync, h_back, visible);
     signal state, new_state     : fsm_state_type;
-    signal sy                   : unsigned(9 downto 0);
 
-begin
-    
+begin 
     reg : process( clk, reset )
     begin
         if (clk'event and clk = '1') then
@@ -37,14 +34,11 @@ begin
     synchro : process( state, count_in )
     begin
         case state is
-
             -- (Re)Initialise FSM
             when prime =>
                 hsync       <= '1';
                 de          <= '0';
                 count_reset <= '1';
-
-                sy          <= (others => '0');
 
                 new_state   <= visible;
             
@@ -54,15 +48,13 @@ begin
                 de          <= '0';
                 count_reset <= '1';
 
-                sy          <= sy + 1; -- Increment on-screen y-coordinate
-
-                if (sy >= to_unsigned(480, 10)) then
+                if (unsigned(y_in) >= to_unsigned(480, 10)) then
                     new_state   <= idle;
                 else
                     new_state   <= visible;
                 end if;
 
-            -- Is active in place of VISIBLE during vsync region
+            -- Is active in place of VISIBLE during v_porch region
             when idle =>
                 hsync       <= '1';
                 de          <= '0';

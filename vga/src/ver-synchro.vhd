@@ -11,7 +11,7 @@ entity v_synchronizer is
   port (
     clk, reset                      : in std_logic;
     count_in, y                     : in std_logic_vector(9 downto 0);  
-    vsync                           : out std_logic
+    vsync, e_vi, r_vi               : out std_logic
   ) ;
 end entity v_synchronizer;
 
@@ -41,11 +41,15 @@ begin
             -- (Re)Initialise FSM
             when prime =>
                 vsync       <= '1';
+                e_vi        <= '0';
+                r_vi        <= '1';
 
                 new_state   <= idle;
                 
             when idle =>
                 vsync       <= '1';
+                e_vi        <= '0';
+                r_vi        <= '0';
             
             if (unsigned(count_in) >= to_unsigned(799, 10)) then
                 new_state   <= init;
@@ -56,6 +60,8 @@ begin
             -- Reset counter and prepare for new horizontal cycle
             when init =>
                 vsync       <= '1';
+                e_vi        <= '1';
+                r_vi        <= '0';
 
                 -- Transition to appropriate vertical region
                 if(unsigned(y) >= to_unsigned(525, 10)) then
@@ -76,6 +82,8 @@ begin
 
             when v_front =>
                 vsync       <= '1';
+                e_vi        <= '0';
+                r_vi        <= '0';
 
                 if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
@@ -85,6 +93,8 @@ begin
                 
             when v_sync =>
                 vsync       <= '0';
+                e_vi        <= '0';
+                r_vi        <= '0';
 
                 if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
@@ -94,7 +104,9 @@ begin
 
             when v_back =>
                 vsync       <= '1';
-
+                e_vi        <= '0';
+                r_vi        <= '0';
+                
                 if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
                 else
@@ -102,5 +114,4 @@ begin
                 end if;
         end case;
     end process ; -- synchro
-    
 end architecture rtl;

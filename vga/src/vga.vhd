@@ -15,9 +15,8 @@ architecture structural of vga is
     component h_synchronizer is
         port (
             clk, reset                      : in std_logic;
-            count_in                        : in std_logic_vector(9 downto 0);  
-            hsync, de, count_reset          : out std_logic;
-            y_out                           : out std_logic_vector(9 downto 0)
+            count_in, y_in                  : in std_logic_vector(9 downto 0);  
+            hsync, de, count_reset          : out std_logic
           ) ;
     end component h_synchronizer;
 
@@ -25,7 +24,7 @@ architecture structural of vga is
         port (
             clk, reset                      : in std_logic;
             count_in, y                     : in std_logic_vector(9 downto 0);  
-            vsync                           : out std_logic
+            vsync, e_vi, r_vi               : out std_logic
           ) ;
     end component v_synchronizer;
 
@@ -38,12 +37,20 @@ architecture structural of vga is
 
     component counter is
         port (
-            clk, reset                      : in std_logic;
+            clk, reset, loc_reset           : in std_logic;
             count_out                       : out std_logic_vector(9 downto 0)
         ) ;        
     end component counter;
 
-    signal s_de, s_count_reset              : std_logic;
+    component v_incr is
+        port (
+            clk, reset, enable, loc_reset   : in std_logic;
+            y_out                           : out std_logic_vector(9 downto 0)
+          ) ;
+    end component v_incr;
+
+    signal s_de, s_count_reset, s_vi_reset  : std_logic;
+    signal s_enable_vi                      : std_logic;
     signal s_count, s_y_interconnect        : std_logic_vector(9 downto 0);
 
 begin
@@ -56,13 +63,15 @@ begin
         hsync       => hsync,
         de          => s_de,
         count_reset => s_count_reset,
-        y_out       => s_y_interconnect
+        y_in        => s_y_interconnect
     );
 
     lbl_v_sync: v_synchronizer
     port map (
         clk         => clk,
         reset       => reset,
+        r_vi        => s_vi_reset,
+        e_vi        => s_enable_vi,
         count_in    => s_count,
         y           => s_y_interconnect,
         vsync       => vsync
@@ -82,7 +91,17 @@ begin
     port map (
         clk         => clk,
         reset       => reset,
+        loc_reset   => s_count_reset,
         count_out   => s_count
+    );
+
+    lbl_v_incr: v_incr
+    port map (
+        clk         => clk,
+        reset       => reset,
+        loc_reset   => s_vi_reset,
+        enable      => s_enable_vi,
+        y_out       => s_y_interconnect
     );
 
 end architecture ;
