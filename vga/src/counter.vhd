@@ -1,15 +1,15 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity hor-counter is
+entity counter is
     port (
         clk, reset      : in std_logic;
         count_out       : out std_logic_vector(9 downto 0);
     ) ;
 
-end hor-counter;
+end counter;
 
-architecture rtl of hor-counter is
+architecture rtl of counter is
     
     signal count, new_count     : unsigned(1 downto 0);
 begin
