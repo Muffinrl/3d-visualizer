@@ -11,12 +11,12 @@ entity v_synchronizer is
   port (
     clk, reset                      : in std_logic;
     count_in, y                     : in std_logic_vector(9 downto 0);  
-    vsync                           : out std_logic;
+    vsync                           : out std_logic
   ) ;
 end entity v_synchronizer;
 
 architecture rtl of v_synchronizer is
-    type fsm_state_type is (reset, idle, init, v_front, v_sync, v_back);
+    type fsm_state_type is (prime, idle, init, v_front, v_sync, v_back);
     signal state, new_state     : fsm_state_type;
 
 begin
@@ -25,7 +25,7 @@ begin
     begin
         if (clk'event and clk = '1') then
             if (reset = '1') then
-                state   <= reset;
+                state   <= prime;
             else
                 state   <= new_state;
             end if;
@@ -39,7 +39,7 @@ begin
         case state is
 
             -- (Re)Initialise FSM
-            when reset =>
+            when prime =>
                 vsync       <= '1';
 
                 new_state   <= idle;
@@ -58,13 +58,13 @@ begin
                 vsync       <= '1';
 
                 -- Transition to appropriate vertical region
-                if(y >= to_unsigned(525, 10)) then
-                    new_state   <= reset;
-                elsif(y >= to_unsigned(492, 10)) then
+                if(unsigned(y) >= to_unsigned(525, 10)) then
+                    new_state   <= prime;
+                elsif(unsigned(y) >= to_unsigned(492, 10)) then
                     new_state   <= v_back;
-                elsif(y >= to_unsigned(490, 10)) then
+                elsif(unsigned(y) >= to_unsigned(490, 10)) then
                     new_state   <= v_sync;
-                elsif(y >= to_unsigned(480, 10)) then
+                elsif(unsigned(y) >= to_unsigned(480, 10)) then
                     new_state   <= v_front;
                 else
                     new_state   <= idle;

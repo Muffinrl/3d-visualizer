@@ -6,7 +6,7 @@ entity vga is
   port (
     clk, reset      : in std_logic;
     vsync, hsync    : out std_logic;
-    r,g,b           : out std_logic_vector(7 downto 0);
+    r,g,b           : out std_logic_vector(7 downto 0)
   ) ;
 end vga ; 
 
@@ -25,26 +25,26 @@ architecture structural of vga is
         port (
             clk, reset                      : in std_logic;
             count_in, y                     : in std_logic_vector(9 downto 0);  
-            vsync                           : out std_logic;
+            vsync                           : out std_logic
           ) ;
     end component v_synchronizer;
 
     component colour_logic is
         port (
-            clk, reset                      : in std_logic;
-            r, g, b                         : out std_logic_vector(7 downto 0); -- 3 x 8-bit representation of the color + brightness of every pixel.        
+            clk, reset, de                  : in std_logic;
+            r, g, b                         : out std_logic_vector(7 downto 0) -- 3 x 8-bit representation of the color + brightness of every pixel.        
           ) ;
     end component colour_logic;
 
     component counter is
         port (
-            clk, reset, de                  : in std_logic;
-            count_out                       : out std_logic_vector(9 downto 0);
+            clk, reset                      : in std_logic;
+            count_out                       : out std_logic_vector(9 downto 0)
         ) ;        
     end component counter;
 
-    signal s_y_interconnect, s_de, s_count_reset    : std_logic;
-    signal s_count                                  : unsigned(9 downto 0);
+    signal s_de, s_count_reset              : std_logic;
+    signal s_count, s_y_interconnect        : std_logic_vector(9 downto 0);
 
 begin
 

@@ -17,7 +17,7 @@ entity h_synchronizer is
 end entity h_synchronizer;
 
 architecture rtl of h_synchronizer is
-    type fsm_state_type is (reset, idle, init, h_front, h_sync, h_back, visible);
+    type fsm_state_type is (prime, idle, init, h_front, h_sync, h_back, visible);
     signal state, new_state     : fsm_state_type;
     signal sy                   : unsigned(9 downto 0);
 
@@ -27,7 +27,7 @@ begin
     begin
         if (clk'event and clk = '1') then
             if (reset = '1') then
-                state   <= reset;
+                state   <= prime;
             else
                 state   <= new_state;
             end if;
@@ -39,7 +39,7 @@ begin
         case state is
 
             -- (Re)Initialise FSM
-            when reset =>
+            when prime =>
                 hsync       <= '1';
                 de          <= '0';
                 count_reset <= '1';
@@ -77,7 +77,6 @@ begin
             -- Render image on screen
             when visible =>
                 hsync       <= '1';
-                vsync       <= '1';
                 de          <= '1';
                 count_reset <= '0';
 
@@ -125,7 +124,5 @@ begin
                 end if;
         end case;
     end process ; -- horizontal synchro
-    
-    y   <= sy;
 
 end architecture rtl;
