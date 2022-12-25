@@ -43,16 +43,23 @@ begin
 
                 new_state   <= visible;
             
-            -- Reset counter and prepare for new cycle
+            -- Reset counter and prepare for new horizontal cycle
             when init =>
                 hsync       <= '1';
                 vsync       <= '1';
                 de          <= '0';
                 count_reset <= '1';
 
-                sy          <= sy + 1;
+                sy          <= sy + 1; -- Increment y-coordinate on screen
 
-                if(sy >= to_unsigned(480, 10)) then
+                -- Transition to appropriate vertical region
+                if(sy >= to_unsigned(525, 10)) then
+                    new_state   <= reset;
+                elsif(sy >= to_unsigned(492, 10)) then
+                    new_state   <= v_back;
+                elsif(sy >= to_unsigned(490, 10)) then
+                    new_state   <= v_sync;
+                elsif(sy >= to_unsigned(480, 10)) then
                     new_state   <= v_front;
                 else
                     new_state   <= visible;
