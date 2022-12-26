@@ -1,15 +1,15 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity counter is
+entity x_counter is
     port (
         clk, reset, loc_reset       : in std_logic;
-        count_out                   : out std_logic_vector(9 downto 0)
+        x_out                       : out std_logic_vector(9 downto 0)
     ) ;
 
-end counter;
+end x_counter;
 
-architecture rtl of counter is
+architecture rtl of x_counter is
     
     signal count, new_count     : unsigned(9 downto 0);
 begin
@@ -30,5 +30,6 @@ begin
         new_count   <= count + 1;
     end process ; -- increment
 
-    count_out   <= std_logic_vector(count);
+    x_out   <= std_logic_vector(count);
+    
 end architecture rtl;

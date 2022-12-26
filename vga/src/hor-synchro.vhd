@@ -109,7 +109,7 @@ begin
                 de          <= '0';
                 count_reset <= '0';
 
-                if(unsigned(count_in) >= to_unsigned(799, 10)) then
+                if(unsigned(count_in) >= to_unsigned(800, 10)) then
                     new_state   <= init;
                 else
                     new_state   <= h_back;

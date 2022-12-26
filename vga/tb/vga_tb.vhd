@@ -8,13 +8,13 @@ end vga_tb;
 architecture beh of vga_tb is
 
     signal clk, reset, hsync, vsync     : std_logic;
-    signal r, g, b                      : std_logic_vector(7 downto 0);
+    signal r, g, b                      : std_logic_vector(3 downto 0);
 
     component vga is
         port (
             clk, reset      : in std_logic;
             vsync, hsync    : out std_logic;
-            r,g,b           : out std_logic_vector(7 downto 0)
+            r,g,b           : out std_logic_vector(3 downto 0)
           ) ;
     end component vga;
 

@@ -6,7 +6,7 @@ entity vga is
   port (
     clk, reset      : in std_logic;
     vsync, hsync    : out std_logic;
-    r,g,b           : out std_logic_vector(7 downto 0)
+    r,g,b           : out std_logic_vector(3 downto 0)
   ) ;
 end vga ; 
 
@@ -23,35 +23,35 @@ architecture structural of vga is
     component v_synchronizer is
         port (
             clk, reset                      : in std_logic;
-            count_in, y                     : in std_logic_vector(9 downto 0);  
-            vsync, e_vi, r_vi               : out std_logic
+            x_in, y                         : in std_logic_vector(9 downto 0);  
+            vsync, r_yc                     : out std_logic
           ) ;
     end component v_synchronizer;
 
     component colour_logic is
         port (
             clk, reset, de                  : in std_logic;
-            r, g, b                         : out std_logic_vector(7 downto 0) -- 3 x 8-bit representation of the color + brightness of every pixel.        
+            r, g, b                         : out std_logic_vector(3 downto 0) -- 12-bit representation of the color + brightness of every pixel.        
           ) ;
     end component colour_logic;
 
-    component counter is
+    component x_counter is
         port (
             clk, reset, loc_reset           : in std_logic;
-            count_out                       : out std_logic_vector(9 downto 0)
+            x_out                           : out std_logic_vector(9 downto 0)
         ) ;        
-    end component counter;
+    end component x_counter;
 
-    component v_incr is
+    component y_counter is
         port (
-            clk, reset, enable, loc_reset   : in std_logic;
+            clk, reset, loc_reset           : in std_logic;
+            x_in                            : in std_logic_vector(9 downto 0);
             y_out                           : out std_logic_vector(9 downto 0)
           ) ;
-    end component v_incr;
+    end component y_counter;
 
-    signal s_de, s_count_reset, s_vi_reset  : std_logic;
-    signal s_enable_vi                      : std_logic;
-    signal s_count, s_y_interconnect        : std_logic_vector(9 downto 0);
+    signal s_de, s_xc_reset, s_yc_reset     : std_logic;
+    signal s_x, s_y                         : std_logic_vector(9 downto 0);
 
 begin
 
@@ -59,21 +59,20 @@ begin
     port map (
         clk         => clk,
         reset       => reset,
-        count_in    => s_count,
+        count_in    => s_x,
         hsync       => hsync,
         de          => s_de,
-        count_reset => s_count_reset,
-        y_in        => s_y_interconnect
+        count_reset => s_xc_reset,
+        y_in        => s_y
     );
 
     lbl_v_sync: v_synchronizer
     port map (
         clk         => clk,
         reset       => reset,
-        r_vi        => s_vi_reset,
-        e_vi        => s_enable_vi,
-        count_in    => s_count,
-        y           => s_y_interconnect,
+        r_yc        => s_yc_reset,
+        x_in        => s_x,
+        y           => s_y,
         vsync       => vsync
     );
 
@@ -87,21 +86,21 @@ begin
         b           => b
     );
 
-    lbl_counter: counter
+    lbl_x_counter: x_counter
     port map (
         clk         => clk,
         reset       => reset,
-        loc_reset   => s_count_reset,
-        count_out   => s_count
+        loc_reset   => s_xc_reset,
+        x_out       => s_x
     );
 
-    lbl_v_incr: v_incr
+    lbl_y_counter: y_counter
     port map (
         clk         => clk,
         reset       => reset,
-        loc_reset   => s_vi_reset,
-        enable      => s_enable_vi,
-        y_out       => s_y_interconnect
+        loc_reset   => s_yc_reset,
+        y_out       => s_y,
+        x_in        => s_x
     );
 
 end architecture ;
