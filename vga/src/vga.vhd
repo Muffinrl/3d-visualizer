@@ -31,6 +31,7 @@ architecture structural of vga is
     component colour_logic is
         port (
             clk, reset, de                  : in std_logic;
+            x, y                            : in std_logic_vector(9 downto 0);
             r, g, b                         : out std_logic_vector(3 downto 0) -- 12-bit representation of the color + brightness of every pixel.        
           ) ;
     end component colour_logic;
@@ -81,6 +82,8 @@ begin
         clk         => clk,
         reset       => reset,
         de          => s_de,
+        x           => s_x,
+        y           => s_y,
         r           => r,
         g           => g,
         b           => b
