@@ -48,7 +48,7 @@ begin
                 de          <= '0';
                 count_reset <= '1';
 
-                if (unsigned(y_in) >= to_unsigned(480, 10)) then
+                if (unsigned(y_in) >= to_unsigned(479, 10)) then
                     new_state   <= idle;
                 else
                     new_state   <= visible;
@@ -60,7 +60,7 @@ begin
                 de          <= '0';
                 count_reset <= '0';
 
-                if(unsigned(count_in) >= to_unsigned(640, 10)) then
+                if(unsigned(count_in) >= to_unsigned(639, 10)) then
                     new_state   <= h_front;
                 else
                     new_state   <= idle;
@@ -72,7 +72,7 @@ begin
                 de          <= '1';
                 count_reset <= '0';
 
-                if(unsigned(count_in) >= to_unsigned(640, 10)) then
+                if(unsigned(count_in) >= to_unsigned(639, 10)) then
                     new_state   <= h_front;
                 else
                     new_state   <= visible;
@@ -87,7 +87,7 @@ begin
                 de          <= '0';
                 count_reset <= '0';
 
-                if(unsigned(count_in) >= to_unsigned(656, 10)) then
+                if(unsigned(count_in) >= to_unsigned(655, 10)) then
                     new_state   <= h_sync;
                 else
                     new_state   <= h_front;
@@ -98,7 +98,7 @@ begin
                 de          <= '0';
                 count_reset <= '0';
 
-                if(unsigned(count_in) >= to_unsigned(752, 10)) then
+                if(unsigned(count_in) >= to_unsigned(751, 10)) then
                     new_state   <= h_back;
                 else
                     new_state   <= h_sync;
@@ -109,7 +109,7 @@ begin
                 de          <= '0';
                 count_reset <= '0';
 
-                if(unsigned(count_in) >= to_unsigned(800, 10)) then
+                if(unsigned(count_in) >= to_unsigned(799, 10)) then
                     new_state   <= init;
                 else
                     new_state   <= h_back;

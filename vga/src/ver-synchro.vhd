@@ -47,8 +47,8 @@ begin
                 vsync       <= '1';
                 r_yc        <= '0';
             
-            if (unsigned(x_in) >= to_unsigned(800, 10)) then
-                if(unsigned(y) >= to_unsigned(480, 10)) then
+            if (unsigned(x_in) >= to_unsigned(799, 10)) then
+                if(unsigned(y) >= to_unsigned(479, 10)) then
                     new_state   <= v_front;
                 else
                     new_state   <= idle;
@@ -65,8 +65,8 @@ begin
                 vsync       <= '1';
                 r_yc        <= '0';
 
-                if(unsigned(x_in) >= to_unsigned(800, 10)) then
-                    if(unsigned(y) >= to_unsigned(490, 10)) then
+                if(unsigned(x_in) >= to_unsigned(799, 10)) then
+                    if(unsigned(y) >= to_unsigned(489, 10)) then
                         new_state   <= v_sync;
                     else
                         new_state   <= v_front;
@@ -79,8 +79,8 @@ begin
                 vsync       <= '0';
                 r_yc        <= '0';
 
-                if(unsigned(x_in) >= to_unsigned(800, 10)) then
-                    if(unsigned(y) >= to_unsigned(492, 10)) then
+                if(unsigned(x_in) >= to_unsigned(799, 10)) then
+                    if(unsigned(y) >= to_unsigned(491, 10)) then
                         new_state   <= v_back;
                     else
                         new_state   <= v_sync;
@@ -93,8 +93,8 @@ begin
                 vsync       <= '1';
                 r_yc        <= '0';
                 
-                if(unsigned(x_in) >= to_unsigned(800, 10)) then
-                    if(unsigned(y) >= to_unsigned(525, 10)) then
+                if(unsigned(x_in) >= to_unsigned(799, 10)) then
+                    if(unsigned(y) >= to_unsigned(524, 10)) then
                         new_state   <= prime;
                     else
                         new_state   <= v_back;
