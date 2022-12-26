@@ -5,6 +5,7 @@ library ieee ;
 entity colour_logic is
   port (
     clk, reset, de  : in std_logic;
+    x, y            : in std_logic_vector(9 downto 0);
     r, g, b         : out std_logic_vector(3 downto 0) -- 12-bit representation of the color + brightness of every pixel.        
   ) ;
 end colour_logic ; 
@@ -23,9 +24,15 @@ begin
             else        
                 -- RGB(139, 172, 15) is #8BAC0F - 12-bit representation: #8A0
                 if(de = '1') then
-                    r   <= x"8";
-                    g   <= x"A";
-                    b   <= x"0";
+                    if(unsigned(y) >= to_unsigned(220, 10))
+                        r   <= x"F";
+                        g   <= x"D";
+                        b   <= x"0";
+                    else
+                        r   <= x"0";
+                        g   <= x"5";
+                        b   <= x"B";
+                    end if;
                 else
                     r   <= (others => '0');
                     g   <= (others => '0');
